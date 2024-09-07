@@ -28,7 +28,7 @@ class RecintosZoo {
             return {erro: 'Quantidade inválida'}
         }
 
-        // this.procuraBiomas(animal, quantidade)
+        this.procuraBiomas(animal, quantidade)
     }
 
     validaAnimal(animal) {
@@ -39,8 +39,79 @@ class RecintosZoo {
         }
         return false
     }
+
+    validaBiomas(biomas,quantidade, animal){
+        // Recebo os biomas disponiveis
+
+        //Tamanho necessário
+        const tamanhoNecessario = this.espaçoOcupado(animal,quantidade)
+
+        // Recintos com os biomas possiveis
+        let recintosPossiveis = []
+        for(let i = 0; i < this.recintos.length; i++){
+            for(let j = 0; j < biomas.length; j++){
+                for(let k = 0; k < this.recintos[i].bioma.length; k++ ){
+                    if(biomas[j] === this.recintos[i].bioma[k].toString()){
+                        recintosPossiveis.push(this.recintos[i].numero);
+                     }
+                }
+            }
+        }
+        console.log("Recintos possiveis: " + recintosPossiveis)
+
+        // verifico o tamanho de cada recinto
+        for(let i = 0; i < recintosPossiveis.length; i++){
+            for(let j = 0; j < this.recintos.length; j++){
+                if(recintosPossiveis[i] === this.recintos[j].numero){
+                    let tamanhoOcupado = 0;
+                    for (let k = 0; k < this.recintos[j].animais.length; k++) {
+                        if(this.recintos[j].animais.length > 1 && k === 0){
+                            tamanhoOcupado ++;
+                        }
+                        const animal = this.recintos[j].animais[k];
+                        tamanhoOcupado += this.espaçoOcupado(animal.especie, animal.quantidade);
+                       
+                    }
+                    console.log("Recinto:" + recintosPossiveis[i] + " tamanho ocupado: " + tamanhoOcupado);
+                }
+            }
+        }
+
+               
+        // calculo quanto de espaço livre tem
+  
+        // Se não tiver nehum -> Erro
+        // return {erro: 'Não há recinto viável'}
+    
+    }
+
+    procuraBiomas(animal,quantidade){
+        let biomasPossiveis 
+        for(let i = 0; i < this.animais.length; i++) {
+            if(this.animais[i].especie === animal){
+               biomasPossiveis = this.animais[i].biomas
+            }
+        }
+        
+        this.validaBiomas(biomasPossiveis, quantidade, animal)
+    }
+
+    espaçoOcupado(animal,quantidade){
+        let tamanhoPorAnimal 
+        for(let indice = 0; indice < this.animais.length; indice++){
+            if(this.animais[indice].especie === animal){
+                tamanhoPorAnimal = this.animais[indice].tamanho
+            }
+        }
+        return tamanhoPorAnimal * quantidade
+    }
+
+    // Verificar se macaco está sozinho
+    // Animal carvívoro
+    // 2 espécies = + 1 espaço ocupado
+
 }
 
-new RecintosZoo().analisaRecintos('MACACO', 2)
+new RecintosZoo().analisaRecintos('CROCODILO', 2)
 
 export { RecintosZoo as RecintosZoo };
