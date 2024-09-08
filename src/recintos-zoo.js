@@ -48,12 +48,29 @@ class RecintosZoo {
         const tamanhoNecessario = this.espaçoOcupado(animalRecebido,quantidade)
 
         // Recintos com os biomas possiveis
+        // Verifico que 1 macaco não ficará sozinho
         let recintosPossiveis = []
         for(let i = 0; i < this.recintos.length; i++){
             for(let j = 0; j < biomas.length; j++){
                 for(let k = 0; k < this.recintos[i].bioma.length; k++ ){
                     if(biomas[j] === this.recintos[i].bioma[k].toString()){
-                        recintosPossiveis.push(this.recintos[i].numero);
+                        if (animalRecebido === "HIPOPOTAMO") {
+                            if (this.recintos[i].animais.length > 0) {
+                                if (this.recintos[i].bioma.includes('savana') && this.recintos[i].bioma.includes('rio')) {
+                                    recintosPossiveis.push(this.recintos[i].numero);
+                                }
+                            } else {
+                                recintosPossiveis.push(this.recintos[i].numero);
+                            }
+                        }
+                        else if (animalRecebido === "MACACO" && quantidade === 1) {
+                            if (this.recintos[i].animais.length > 0) {
+                                recintosPossiveis.push(this.recintos[i].numero);
+                            }
+                        } else {
+                            recintosPossiveis.push(this.recintos[i].numero);
+                        }
+                       
                      }
                 }
             }
@@ -115,10 +132,13 @@ class RecintosZoo {
                         tamanhoOcupado = tamanhoOcupado + 1
                         verificaEspecieDiferentes = false
                     }
-                    // console.log("Recinto:" + recintosPossiveis[i] + " - tamanho ocupado: " + tamanhoOcupado);
-                    tamanhoOcupadoPorRecintos[i] = tamanhoOcupado
-                    tamanhoLivrePorRecintos[i] = this.recintos[j].tamanhoTotal - tamanhoOcupadoPorRecintos[i] - tamanhoNecessario
-                    recintosViaveis.push(`Recinto ${recintosPossiveis[i]} (espaço livre: ${tamanhoLivrePorRecintos[i]} total: ${this.recintos[j].tamanhoTotal})`);
+
+                  
+                    if(!(tamanhoNecessario > this.recintos[j].tamanhoTotal - tamanhoOcupado )){
+                        tamanhoOcupadoPorRecintos[i] = tamanhoOcupado
+                        tamanhoLivrePorRecintos[i] = this.recintos[j].tamanhoTotal - tamanhoOcupadoPorRecintos[i] - tamanhoNecessario
+                        recintosViaveis.push(`Recinto ${recintosPossiveis[i]} (espaço livre: ${tamanhoLivrePorRecintos[i]} total: ${this.recintos[j].tamanhoTotal})`); 
+                    }
                 }
             }
         }
@@ -154,7 +174,6 @@ class RecintosZoo {
         return tamanhoPorAnimal * quantidade
     }
 
-    // Verificar se macaco está sozinho
     // Hipopotamo
 
 }
